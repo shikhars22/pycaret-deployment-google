@@ -53,11 +53,12 @@ These commands fix multiple syntax bugs from the original instructions (such as 
 
 ```bash
 # 1. Clone the repository and navigate into it
-git clone https://github.com/pycaret/pycaret-deployment-google.git
+git clone https://github.com/shikhars22/pycaret-deployment-google.git
 cd pycaret-deployment-google/
 
 # 2. Set the GCP Project ID environment variable (Note: Variable names in Linux are case-sensitive)
-export PROJECT_ID=pycaret-deployment-practice
+# In Cloud Shell, GOOGLE_CLOUD_PROJECT is already set for you, so we capture it dynamically:
+export PROJECT_ID=${GOOGLE_CLOUD_PROJECT:-pycaret-deployment-practice}
 echo $PROJECT_ID
 
 # 3. Build the Docker image
