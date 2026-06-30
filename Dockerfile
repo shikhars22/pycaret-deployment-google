@@ -1,4 +1,4 @@
-FROM python:3.9
+FROM python:3.8
 RUN pip install virtualenv
 ENV VIRTUAL_ENV=/venv
 RUN virtualenv $VIRTUAL_ENV -p python3
