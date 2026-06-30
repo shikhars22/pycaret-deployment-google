@@ -45,6 +45,59 @@ gcloud builds submit --tag gcr.io/my-mlops-project-12345/pycaret-insurance-app:l
 
 ---
 
+## 🚀 Deployment through Google Cloud Kubernetes (GKE)
+
+Here are the corrected, step-by-step commands to deploy your application on Google Kubernetes Engine (GKE) using your GCP project ID `pycaret-deployment-practice`. 
+
+These commands fix multiple syntax bugs from the original instructions (such as variable case mismatch, tag spacing, incorrect zone naming, and deployment image flags):
+
+```bash
+# 1. Clone the repository and navigate into it
+git clone https://github.com/pycaret/pycaret-deployment-google.git
+cd pycaret-deployment-google/
+
+# 2. Set the GCP Project ID environment variable (Note: Variable names in Linux are case-sensitive)
+export PROJECT_ID=pycaret-deployment-practice
+echo $PROJECT_ID
+
+# 3. Build the Docker image
+# Fixes: Removed the invalid space before 'v1' tag, and added '.' at the end for build context.
+docker build -t gcr.io/${PROJECT_ID}/insurance-app:v1 .
+
+# 4. Verify your local images
+docker images
+
+# 5. Authenticate Docker with Google Container Registry (GCR)
+gcloud auth configure-docker gcr.io --quiet
+
+# 6. Push the image to GCR
+# Fix: Removed the invalid space before 'v1' tag.
+docker push gcr.io/${PROJECT_ID}/insurance-app:v1
+
+# 7. Set your default compute zone
+# Fix: Corrected the spelling from 'us-centrall' to the valid zone 'us-central1-a'.
+gcloud config set compute/zone us-central1-a
+
+# 8. Create a Kubernetes cluster on GKE (Google Kubernetes Engine)
+gcloud container clusters create insurance-cluster --num-nodes=1
+
+# 9. Get credentials for your cluster to allow kubectl commands
+gcloud container clusters get-credentials insurance-cluster
+
+# 10. Deploy the application to the cluster
+# Fixes: Corrected '--image-gcr.io' to '--image=gcr.io' and removed the space before the tag.
+kubectl create deployment insurance-app --image=gcr.io/${PROJECT_ID}/insurance-app:v1
+
+# 11. Expose the deployment to the internet as a LoadBalancer service
+# (This assigns a public IP to your application on port 80, forwarding traffic to the container port 8080)
+kubectl expose deployment insurance-app --type=LoadBalancer --port=80 --target-port=8080
+
+# 12. Check service status to find your External IP (Note: External IP provisioning takes 1-2 minutes)
+kubectl get service insurance-app
+```
+
+---
+
 - Official : https://www.pycaret.org
 
 - LinkedIn : https://www.linkedin.com/company/pycaret/
