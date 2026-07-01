@@ -50,11 +50,11 @@ git clone https://github.com/shikhars22/pycaret-deployment-google.git
 cd pycaret-deployment-google/
 
 # 2. Set environment variables (Note: Variable names in Linux are case-sensitive)
-# Ensure GOOGLE_CLOUD_PROJECT is set (falls back to your project ID if empty):
-export GOOGLE_CLOUD_PROJECT=${GOOGLE_CLOUD_PROJECT:-pycaret-deployment-practice}
+# In Cloud Shell, GOOGLE_CLOUD_PROJECT is already set for you:
+export PROJECT_ID=${GOOGLE_CLOUD_PROJECT:-pycaret-deployment-practice}
 export REGION=us-central1
 export REPO_NAME=pycaret-repo
-echo "Project: $GOOGLE_CLOUD_PROJECT, Region: $REGION, Repo: $REPO_NAME"
+echo "Project: $PROJECT_ID, Region: $REGION, Repo: $REPO_NAME"
 
 # 3. Create the Artifact Registry Docker repository (if it doesn't already exist)
 gcloud artifacts repositories create ${REPO_NAME} \
@@ -66,10 +66,10 @@ gcloud artifacts repositories create ${REPO_NAME} \
 gcloud auth configure-docker ${REGION}-docker.pkg.dev --quiet
 
 # 5. Build the Docker image
-docker build -t ${REGION}-docker.pkg.dev/${GOOGLE_CLOUD_PROJECT}/${REPO_NAME}/insurance-app:v1 .
+docker build -t ${REGION}-docker.pkg.dev/${PROJECT_ID}/${REPO_NAME}/insurance-app:v1 .
 
 # 6. Push the image to Artifact Registry
-docker push ${REGION}-docker.pkg.dev/${GOOGLE_CLOUD_PROJECT}/${REPO_NAME}/insurance-app:v1
+docker push ${REGION}-docker.pkg.dev/${PROJECT_ID}/${REPO_NAME}/insurance-app:v1
 
 # 7. Set your default compute zone
 gcloud config set compute/zone ${REGION}-a
@@ -81,7 +81,7 @@ gcloud container clusters create insurance-cluster --num-nodes=1
 gcloud container clusters get-credentials insurance-cluster
 
 # 10. Deploy the application to GKE using the Artifact Registry image
-kubectl create deployment insurance-app --image=${REGION}-docker.pkg.dev/${GOOGLE_CLOUD_PROJECT}/${REPO_NAME}/insurance-app:v1
+kubectl create deployment insurance-app --image=${REGION}-docker.pkg.dev/${PROJECT_ID}/${REPO_NAME}/insurance-app:v1
 
 # 11. Expose the deployment to the internet as a LoadBalancer service
 # (This assigns a public IP to your application on port 80, forwarding traffic to the container port 8080)
