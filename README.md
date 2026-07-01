@@ -40,9 +40,22 @@ gcloud builds submit --tag us-central1-docker.pkg.dev/pycaret-deployment-practic
 
 ## 🚀 Deployment through Google Cloud Kubernetes (GKE)
 
-Here are the corrected, step-by-step commands to deploy your application on Google Kubernetes Engine (GKE) using your GCP project ID `pycaret-deployment-practice`.
+You can deploy the entire stack automatically in one shot using the included shell script, or run the steps manually.
 
-These commands configure and use **Google Artifact Registry** to store the container image instead of the deprecated `gcr.io`:
+### Option A: One-Shot Automated Deployment (Recommended)
+Simply clone the repository and run the `gke_deploy.sh` script inside your Google Cloud Shell:
+```bash
+git clone https://github.com/shikhars22/pycaret-deployment-google.git
+cd pycaret-deployment-google/
+chmod +x gke_deploy.sh
+./gke_deploy.sh
+```
+This script will automatically enable APIs, create your Artifact Registry repository, build/push the Docker container, spin up your GKE cluster, deploy the application, and output the final public URL.
+
+---
+
+### Option B: Step-by-Step Manual Deployment
+If you prefer running the commands manually:
 
 ```bash
 # 1. Clone the repository and navigate into it
